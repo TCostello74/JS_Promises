@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <button id="draw-card">Draw a Card</button>
+    <div id="card"></div>
+
+    <script>
+        let deckId = '';
+
+        fetch('https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1')
+            .then(response => response.json())
+            .then(data => {
+                deckId = data.deck_id;
+            });
+
+        document.getElementById('draw-card').addEventListener('click', () => {
+            fetch(`https://deckofcardsapi.com/api/deck/${deckId}/draw/?count=1`)
+                .then(response => response.json())
+                .then(data => {
+                    if(data.remaining === 0) {
+                        document.getElementById('draw-card').disabled = true;
+                    }
+
+                    let card = data.cards[0];
+                    document.getElementById('card').innerHTML = `<img src="${card.image}" alt="${card.value} of ${card.suit}">`;
+                });
+        });
+    </script>
+</body>
+</html>
